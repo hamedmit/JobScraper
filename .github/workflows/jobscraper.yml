@@ -5,11 +5,9 @@ on:
 
 jobs:
   run:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -25,5 +23,3 @@ jobs:
 
       - name: Run Project
         run: python main.py
-
-
