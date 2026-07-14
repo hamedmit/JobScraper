@@ -1,27 +1,55 @@
 name: JobScraper
 
 on:
+
   workflow_dispatch:
 
+  schedule:
+    - cron: "0 6 * * *"
+
+permissions:
+  contents: write
+
 jobs:
-  run:
+
+  scrape:
 
     runs-on: ubuntu-latest
 
     steps:
 
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Run Project
-        run: python main.py
+      - name: Run JobScraper
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python main.py
+
+      - name: Commit output files
+
+        run: |
+
+          git config --global user.name "github-actions"
+
+          git config --global user.email "github-actions@github.com"
+
+          git add output/reports/jobs.csv
+
+          git add output/reports/run_history.csv
+
+          git commit -m "Automatic update" || echo "No changes"
+
+          git push

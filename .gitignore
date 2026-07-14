@@ -16,7 +16,7 @@ venv/
 Thumbs.db
 
 # Output files
-output/
+output/logs/
 
 # Environment variables
 .env
